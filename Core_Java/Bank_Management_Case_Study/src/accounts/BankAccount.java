@@ -1,0 +1,156 @@
+package accounts;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import helpers.Transaction;
+
+public abstract class BankAccount {
+	
+	//attributes
+	private static int accountCounter=1000000;
+	private int accNo;
+	private String holderName;
+	private String mobileNo;
+	private String accountType;
+	private double balance;
+	private ArrayList<Transaction> transactions= new ArrayList<Transaction>();
+	private String holderCity;
+	private LocalDate openingDate;
+	private LocalDate closingDate;
+	private boolean accountStatus;
+	
+	//parameterized constructor
+	public BankAccount(String holderName, String mobileNo, String accountType, String holderCity) {
+		this.accNo = accountCounter++;
+		this.holderName = holderName;
+		this.mobileNo = mobileNo;
+		this.accountType = accountType;
+		this.balance = 0;
+		this.holderCity = holderCity;
+		this.openingDate = LocalDate.now();
+		this.setAccountStatus(true);
+		this.closingDate = null;
+	}
+
+	//getters
+	public int getAccNo() {
+		return accNo;
+	}
+
+	public String getHolderName() {
+		return holderName;
+	}
+
+	public String getMobileNo() {
+		return mobileNo;
+	}
+
+	public String getAccountType() {
+		return accountType;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public ArrayList<Transaction> getTransactions() {
+		return transactions;
+	}
+	
+	public String getHolderCity() {
+		return holderCity;
+	}
+
+	public LocalDate getOpeningDate() {
+		return openingDate;
+	}
+
+	public LocalDate getClosingDate() {
+		return closingDate;
+	}
+
+	//setters
+	public void setHolderName(String holderName) {
+		this.holderName = holderName;
+	}
+
+	public void setMobileNo(String mobileNo) {
+		this.mobileNo = mobileNo;
+	}
+
+	public void setHolderCity(String holderCity) {
+		this.holderCity = holderCity;
+	}
+
+	
+	public void setOpeningDate(LocalDate openingDate) {
+		this.openingDate = openingDate;
+	}
+
+	public void setClosingDate(LocalDate closingDate) {
+		this.closingDate = closingDate;
+	}
+	
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+
+	public boolean getAccountStatus() {
+		return accountStatus;
+	}
+
+	public void setAccountStatus(boolean accountStatus) {
+		this.accountStatus = accountStatus;
+	}
+
+	//abstract functions to be overridden
+	public abstract boolean withdraw(double amount);
+	public void display() {
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		
+		    System.out.println("\n==================== ACCOUNT DETAILS ====================");
+		    System.out.printf("%-25s : %d%n", "Account Number", accNo);
+		    System.out.printf("%-25s : %s%n", "Account Holder Name", holderName);
+		    System.out.printf("%-25s : %s%n", "Mobile Number", mobileNo);
+		    System.out.printf("%-25s : %s%n", "Account Type", accountType);
+		    System.out.printf("%-25s : %s%n", "Account Status", (accountStatus) ? "Active" : "Closed");
+		    System.out.printf("%-25s : %.2f%n", "Balance", balance);
+		    System.out.printf("%-25s : %s%n", "City", holderCity);
+		    System.out.printf("%-25s : %s%n", "Opening Date", openingDate.format(formatter));
+	}
+	
+	public double calculateIntrest() {
+		return 0;
+	}
+	
+	public boolean deposit(double amount) {
+		this.balance = this.balance+amount;
+		transactions.add(new Transaction("Deposit", this.balance , amount));
+		return true;
+	}
+	
+	public void displayAllTransactions() {
+	    if (transactions.isEmpty()) {
+	        System.out.println("No transactions found for this account.");
+	        return;
+	    }
+
+	    System.out.println("\n------------------------------------------------------------------------------------------------------------------------");
+	    System.out.printf("| %-10s | %-12s | %-12s | %-10s | %-12s |\n","Trans. ID", "Date", "Type", "Amount", "Balance");
+	    System.out.println("------------------------------------------------------------------------------------------------------------------------");
+
+	    for (Transaction t : transactions) {
+	        System.out.printf("| %-10d | %-12s | %-12s | %-10.2f | %-12.2f |\n",
+	                t.getTransactionId(),
+	                t.getTransactionDate(),
+	                t.getTransactionType(),
+	                t.getAmount(),
+	                t.getBalanceAfter());
+	    }
+
+	    System.out.println("------------------------------------------------------------------------------------------------------------------------");
+	}
+
+
+}
